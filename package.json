@@ -1,0 +1,29 @@
+{
+  "name": "saaskit",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "start": "turbo start",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "eslint": "^8.*",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "turbo": "^2.2.1",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "yarn@4.5.1",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

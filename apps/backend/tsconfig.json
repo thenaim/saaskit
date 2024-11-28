@@ -1,0 +1,12 @@
+{
+  "extends": "@repo/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "strictNullChecks": true,
+    "paths": {
+      "@repo/*": ["../../packages/*"]
+    }
+  }
+}

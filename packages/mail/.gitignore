@@ -1,0 +1,7 @@
+node_modules
+dist
+out
+# Keep environment variables out of version control
+.env
+# "dev": "email dev -d ./src/emails -p 3333",
+# "export": "email export -d ./src/emails"

@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/emails/index.ts","./src/emails/auth/index.ts","./src/providers/index.ts","./src/providers/sendgrid/index.ts","./src/providers/smtp/index.ts","./src/emails/auth/confirm-email-address.tsx","./src/emails/auth/reset-password.tsx"],"version":"5.6.3"}

@@ -1,0 +1,55 @@
+{
+  "name": "@repo/database",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist/**"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:push": "prisma db push --force-reset",
+    "db:seed": "tsx src/seed/index.ts",
+    "dev": "tsc --build --watch --preserveWatchOutput",
+    "build": "tsc --build",
+    "format": "prisma format",
+    "generate": "prisma generate",
+    "lint": "eslint . --max-warnings 0",
+    "prebuild": "yarn run generate",
+    "predev": "yarn run generate",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.2"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/node": "^22.7.5",
+    "eslint": "^8.*",
+    "prisma": "^5.10.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  }
+}

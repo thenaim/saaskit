@@ -1,0 +1,401 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String               @id @default(cuid())
+  customerId          String?
+  name                String?
+  email               String               @unique
+  password            String
+  isConfirmed         Boolean              @default(false)
+  isAdmin             Boolean              @default(false)
+  isBlocked           Boolean              @default(false)
+  addressLine1        String?
+  addressLine2        String?
+  city                String?
+  state               String?
+  zip                 String?
+  countryCode         String?
+  phone               String?
+  taxNumber           String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
+  authAccounts        AuthAccount[]
+  blogs               Blog[]
+  passwordResetTokens PasswordResetToken[]
+  sessions            Session[]
+  verificationTokens  VerificationToken[]
+  blogCategories      BlogCategory[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([token])
+}
+
+model AuthAccount {
+  id             String       @id @default(cuid())
+  provider       AuthProvider
+  providerUserId String
+  userId         String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  user           User         @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerUserId])
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Project {
+  id            String                @id @default(cuid())
+  name          String                @default("Test")
+  description   String?
+  supportEmail  String                @default("test@test.test")
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @default(now()) @updatedAt
+  isActive      Boolean               @unique
+  analytics     ProjectAnalytics?
+  authProviders ProjectAuthProvider[]
+  email         ProjectEmail?
+  payment       ProjectPayment?
+  reCaptcha     ProjectReCaptcha?
+}
+
+model ProjectAuthProvider {
+  id           String       @id @default(cuid())
+  name         String
+  provider     AuthProvider
+  isEnabled    Boolean      @default(false)
+  clientId     String?
+  clientSecret String?
+  projectId    String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  project      Project      @relation(fields: [projectId], references: [id])
+}
+
+model ProjectPayment {
+  id                 String                   @id @default(cuid())
+  defaultCurrency    String                   @default("USD")
+  isPaymentProration Boolean                  @default(true)
+  projectId          String                   @unique
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @default(now()) @updatedAt
+  project            Project                  @relation(fields: [projectId], references: [id])
+  providers          ProjectPaymentProvider[]
+}
+
+model ProjectPaymentProvider {
+  id       String          @id @default(cuid())
+  name     String
+  provider PaymentProvider @unique
+  isActive Boolean         @default(false)
+
+  verndorId       String?
+  clientSideToken String?
+  vendorAuthCode  String?
+  webhookSecret   String?
+
+  paymentId     String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  payment       ProjectPayment @relation(fields: [paymentId], references: [id])
+  subscriptions Subscription[]
+  transactions  Transaction[]
+  adjustments   Adjustment[]
+}
+
+model ProjectEmail {
+  id                    String                 @id @default(cuid())
+  defaultEmailProvider  EmailProvider          @default(smtp)
+  defaultEmailFromName  String                 @default("TEST")
+  defaultEmailFromEmail String                 @default("test@test.test")
+  projectId             String                 @unique
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @default(now()) @updatedAt
+  project               Project                @relation(fields: [projectId], references: [id])
+  providers             ProjectEmailProvider[]
+}
+
+model ProjectEmailProvider {
+  id        String        @id @default(cuid())
+  name      String
+  provider  EmailProvider @unique
+  domain    String?
+  secret    String?
+  endpoint  String?
+  token     String?
+  key       String?
+  region    String?
+  host      String?
+  port      String?
+  username  String?
+  password  String?
+  emailId   String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @default(now()) @updatedAt
+  email     ProjectEmail  @relation(fields: [emailId], references: [id])
+}
+
+model ProjectAnalytics {
+  id                        String   @id @default(cuid())
+  isCookieConsentBarEnabled Boolean  @default(false)
+  googleTrackingId          String?
+  trackingScripts           String?
+  projectId                 String   @unique
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @default(now()) @updatedAt
+  project                   Project  @relation(fields: [projectId], references: [id])
+}
+
+model ProjectReCaptcha {
+  id                     String   @id @default(cuid())
+  isReCaptchaEnabled     Boolean  @default(false)
+  reCaptchaApiSiteKey    String?
+  reCaptchaApiSiteSecret String?
+  projectId              String   @unique
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @default(now()) @updatedAt
+  project                Project  @relation(fields: [projectId], references: [id])
+}
+
+model Blog {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  content     Json
+  slug        String        @unique
+  imageUrl    String?
+  isPublished Boolean       @default(false)
+  userId      String?
+  categotyId  String?
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  categoty    BlogCategory? @relation(fields: [categotyId], references: [id])
+  user        User?         @relation(fields: [userId], references: [id])
+}
+
+model BlogCategory {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  blogs     Blog[]
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  slug        String?
+  description String?
+  isActive    Boolean     @default(true)
+  /// [ProductMetadataType]
+  metadata    Json[]      @default([])
+  /// [ProductFeaturesType]
+  features    Json[]      @default([])
+  isPopular   Boolean     @default(false)
+  isDefault   Boolean     @default(false)
+  type        ProductType @default(onetime)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  plans     Plan[]
+
+  @@index([slug, type])
+}
+
+model Plan {
+  id                 String       @id @default(cuid())
+  name               String
+  slug               String?
+  productId          String
+  intervalCount      Int
+  interval           PlanInterval
+  isHasTrial         Boolean      @default(false)
+  trialIntervalCount Int
+  trialInterval      PlanInterval
+  isActive           Boolean      @default(true)
+  description        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  product       Product        @relation(fields: [productId], references: [id])
+  subscriptions Subscription[]
+
+  @@index([slug])
+}
+
+model Discount {
+  id                        String       @id @default(cuid())
+  name                      String
+  description               String?
+  type                      DiscountType @default(flat)
+  amount                    Int
+  validUntil                DateTime?
+  plans                     Json[]       @default([])
+  oneTimeProducts           Json[]       @default([])
+  maxRedemptions            Int          @default(-1)
+  maxRedemptionsPerUser     Int          @default(-1)
+  isRecurring               Boolean      @default(false)
+  isActive                  Boolean      @default(true)
+  durationInMonths          Int?
+  maximumRecurringIntervals Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Subscription {
+  id                     String          @id @default(cuid())
+  providerSubscriptionId String          @unique
+  provider               PaymentProvider
+  status                 String
+  transactionId          String?
+  customerId             String
+  addressId              String
+  businessId             String?
+  currencyCode           String
+  createdAt              String
+  updatedAt              String
+  startedAt              String?
+  firstBilledAt          String?
+  nextBilledAt           String?
+  pausedAt               String?
+  canceledAt             String?
+  discount               Json?
+  collectionMode         String
+  billingDetails         Json?
+  currentBillingPeriod   Json?
+  billingCycle           Json
+  scheduledChange        Json?
+  items                  Json[]
+  customData             Json?
+  importMeta             Json?
+
+  paymentProvider ProjectPaymentProvider @relation(fields: [provider], references: [provider])
+  Plan            Plan?                  @relation(fields: [planId], references: [id])
+  planId          String?
+}
+
+model Transaction {
+  id                    String          @id @default(cuid())
+  providerTransactionId String          @unique
+  provider              PaymentProvider
+  status                String
+  customerId            String?
+  addressId             String?
+  businessId            String?
+  customData            Json?
+  currencyCode          String
+  origin                String
+  subscriptionId        String?
+  invoiceId             String?
+  invoiceNumber         String?
+  collectionMode        String
+  discountId            String?
+  billingDetails        Json?
+  billingPeriod         Json?
+  items                 Json[]
+  details               Json?
+  payments              Json?
+  checkout              Json?
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  billedAt              DateTime?
+
+  paymentProvider ProjectPaymentProvider @relation(fields: [provider], references: [provider])
+
+  @@index([customerId, subscriptionId])
+}
+
+model Adjustment {
+  id                     String          @id @default(cuid())
+  providerAdjustmentId   String          @unique
+  provider               PaymentProvider
+  action                 String
+  transactionId          String
+  subscriptionId         String?
+  customerId             String
+  reason                 String
+  creditAppliedToBalance Boolean
+  currencyCode           String
+  status                 String
+  items                  Json[]
+  totals                 Json
+  payoutTotals           Json?
+  createdAt              DateTime
+  updatedAt              DateTime
+
+  paymentProvider ProjectPaymentProvider @relation(fields: [provider], references: [provider])
+
+  @@index([customerId, subscriptionId])
+}
+
+enum ProductType {
+  onetime      @map("onetime")
+  subscription @map("subscription")
+}
+
+enum DiscountType {
+  flat       @map("flat")
+  percentage @map("percentage")
+}
+
+enum PlanInterval {
+  day   @map("day")
+  week  @map("week")
+  month @map("month")
+  year  @map("year")
+}
+
+enum AuthProvider {
+  google   @map("google")
+  facebook @map("facebook")
+}
+
+enum EmailProvider {
+  smtp     @map("smtp")
+  sendgrid @map("sendgrid")
+}
+
+enum PaymentProvider {
+  paddle @map("paddle")
+  stripe @map("stripe")
+}

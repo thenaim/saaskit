@@ -1,0 +1,49 @@
+{
+  "name": "@repo/api",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist/**"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --build --watch --preserveWatchOutput",
+    "build": "tsc --build",
+    "lint": "eslint \"{src,apps,libs,test}/**/*{.ts,.tsx}\""
+  },
+  "dependencies": {
+    "@repo/database": "*",
+    "joi": "^17.13.3",
+    "yup": "^1.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/node": "^20.3.1",
+    "eslint": "^8.*",
+    "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "@repo/editorjs",
+  "version": "0.0.0",
+  "private": true,
+  "types": "./index.d.ts",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@repo/ui": "*",
+    "@types/eslint": "^8.56.5",
+    "@types/lodash": "^4.17.10",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "eslint": "^8.*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@editorjs/checklist": "^1.6.0",
+    "@editorjs/code": "^2.9.2",
+    "@editorjs/delimiter": "^1.4.2",
+    "@editorjs/editorjs": "^2.30.6",
+    "@editorjs/embed": "^2.7.6",
+    "@editorjs/header": "^2.8.8",
+    "@editorjs/image": "^2.9.3",
+    "@editorjs/inline-code": "^1.5.1",
+    "@editorjs/link": "^2.6.2",
+    "@editorjs/list": "^1.10.0",
+    "@editorjs/marker": "^1.4.0",
+    "@editorjs/paragraph": "^2.11.6",
+    "@editorjs/quote": "^2.7.2",
+    "@editorjs/raw": "^2.5.0",
+    "@editorjs/table": "^2.4.2",
+    "@editorjs/warning": "^1.4.0",
+    "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.453.0",
+    "next-themes": "^0.3.0",
+    "react": "rc",
+    "react-editor-js": "^2.1.0",
+    "react-use": "^17.5.1"
+  }
+}

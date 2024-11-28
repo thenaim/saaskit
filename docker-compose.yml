@@ -1,0 +1,17 @@
+# docker exec -ti <name> /bin/bash
+services:
+  startlykit-postgres:
+    container_name: startlykit-postgres
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: pwdpwd
+      POSTGRES_USER: root
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  startlykit-mailpit:
+    container_name: startlykit-mailpit
+    image: axllent/mailpit:latest
+    ports:
+      - 8025:8025 # web ui
+      - 1025:1025 # smtp server
